@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+  app:
+    image:
+    init: true
+    expose:
+      - 8080
+    environment:
+      GITLAB_API_TOKEN:
+      GITLAB_GROUP:
+      GITLAB_API_URL: https://gitlab.com/api/v4/
+    entrypoint: /app/dockerfile/docker-entrypoint.sh
