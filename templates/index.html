@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CloudyBay CI Console</title>
+</head>
+<body>
+  <ul>
+    {% for project in projects %}
+      <li>
+      <a target="_blank" href="{{ project['web_url'] }}">
+      {{ project['name'] }}
+      </a>
+      <ul>
+        <li>
+          {% if project['latest_pipeline']['status'] %}
+          <a target="_blank" href="{{ project['latest_pipeline']['web_url'] }}">
+            {{ project['latest_pipeline']['status'] }}
+          </a>
+          {% else %}
+          None
+          {% endif %}
+
+        </li>
+      </ul>
+      </li>
+    {% endfor %}
+
+  </ul>
+
+</body>
+</html>
