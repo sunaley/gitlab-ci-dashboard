@@ -1,0 +1,13 @@
+{
+    "hosts": {
+        "staging": "http://{{server_name}}:{port}"
+    },
+    "projects": {
+        "{{project}}": {
+            "host": "staging",
+            "pattern": {
+                "port": {{port}}
+            }
+        }
+    }
+}

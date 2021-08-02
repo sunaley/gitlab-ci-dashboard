@@ -35,8 +35,9 @@ async def root(
         if project['name'] in target_projects['projects']:
             tasks.append(fetcher.pipelines(project['id']))
             project_propperties = target_projects['projects'][project['name']]
-            port = project_propperties.get('port', '')
-            project['web_url'] = target_projects['hosts'][project_propperties['host']]['url'] + f':{port}' if port else ''
+            project['web_url'] = target_projects['hosts'][project_propperties['host']].format(
+                **project_propperties['pattern']
+            )
             projects.append(project)
 
     responses = await asyncio.gather(*tasks)
