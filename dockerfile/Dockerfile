@@ -1,4 +1,8 @@
+FROM --platform=linux/amd64 tianon/gosu:alpine AS gosu-builder
+
 FROM python:3.9-alpine
+
+COPY --from=gosu-builder /usr/local/bin/gosu /usr/local/bin/gosu
 
 RUN apk update \
     && apk upgrade \
@@ -6,15 +10,11 @@ RUN apk update \
     && addgroup -S ci-dashboard \
     && adduser -S ci-dashboard -G ci-dashboard
 
-USER ci-dashboard
-
-COPY --chown=ci-dashboard:ci-dashboard . /app
+COPY . /app
 
 EXPOSE 80
 
 RUN pip install --no-cache-dir -r /app/requirements.txt
-
-ENV PATH="/home/ci-dashboard/.local/bin:${PATH}"
 
 WORKDIR /app
 
