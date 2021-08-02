@@ -60,6 +60,6 @@ async def read_conf():
         raise FileNotFoundError('config.json does not exist')
 
 
-app = VersionedFastAPI(app,
-    version_format='{major}',
-    prefix_format='/v{major}')
+# app = VersionedFastAPI(app,
+#     version_format='{major}',
+#     prefix_format='/v{major}')
