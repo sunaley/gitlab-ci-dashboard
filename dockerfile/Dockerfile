@@ -14,7 +14,6 @@ RUN apk update \
     && apk add --no-cache --virtual .build-deps gcc musl-dev build-base nginx bash \
     && addgroup -S ci-dashboard \
     && adduser -S ci-dashboard -G ci-dashboard \
-    && mkdir /run \
     && mkdir /run/nginx \
     && chown -R nginx:nginx /run/nginx/ \
     && chmod 775 /run/nginx/
