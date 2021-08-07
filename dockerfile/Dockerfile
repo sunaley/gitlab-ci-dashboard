@@ -19,7 +19,7 @@ RUN apk update \
     && chmod 775 /run/nginx/
 
 COPY . /app
-COPY --from=www-builder --chown=nginx:nginx --chmod=775 /www/dist /www
+COPY --from=www-builder --chown=nginx:nginx /www/dist /www
 COPY --chown=nginx:nginx ./nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
