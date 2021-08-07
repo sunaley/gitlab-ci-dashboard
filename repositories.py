@@ -53,7 +53,7 @@ class GitlabAPI:
             async with session.get(url, headers=self.get_headers(), params={
                 'pagination': 'keyset',
                 'per_page': 100,
-                'order_by': 'id',
+                'order_by': 'last_activity_at',
                 'sort': 'desc'
             }) as resp:
                 if pipelines_status := await resp.json():
@@ -69,6 +69,16 @@ class GitlabAPI:
                     'per_page': 1,
                     'page': 1
                 }
+            ) as resp:
+                if pipelines_status := await resp.json():
+                    return pipelines_status
+
+    async def pipeline(self, project_id: int, pipeline_id: int):
+        async with aiohttp.ClientSession() as session:
+            url = uurljoin(self.API_URL, 'projects', project_id, 'pipelines', pipeline_id)
+            async with session.get(
+                url,
+                headers=self.get_headers()
             ) as resp:
                 if pipelines_status := await resp.json():
                     return pipelines_status
