@@ -2,12 +2,10 @@ import os
 import ujson as json
 import aiofiles
 
-from fastapi import FastAPI
-from fastapi import  FastAPI
+from fastapi import FastAPI, APIRouter
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from starlette.requests import Request
 from starlette.templating import Jinja2Templates
 
 from config import Settings
@@ -16,12 +14,16 @@ from repositories import GitlabAPI
 
 templates = Jinja2Templates(directory='templates')
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-app = FastAPI()
+
+app = FastAPI(docs_url='/api/v1/docs', openapi_url="/api/v1/openapi.json")
+router = APIRouter()
+
+
 settings = Settings()
 fetcher = GitlabAPI(settings.GITLAB_GROUP)
 
 
-@app.get("/api/v1/projects")
+@router.get("/projects")
 async def projects():
     raw_projects = await fetcher.projects()
     target_projects = await read_conf()
@@ -41,7 +43,7 @@ async def projects():
     return JSONResponse(projects)
 
 
-@app.get("/api/v1/projects/{project_id}/latest_pipelines")
+@router.get("/projects/{project_id}/latest_pipelines")
 async def project_pipelines(
     project_id: int
 ):
@@ -49,7 +51,7 @@ async def project_pipelines(
     return JSONResponse(pipelines)
 
 
-@app.get("/api/v1/projects/{project_id}/pipelines/{pipeline_id}")
+@router.get("/projects/{project_id}/pipelines/{pipeline_id}")
 async def project_pipeline(
     project_id: int,
     pipeline_id: int
@@ -68,6 +70,7 @@ async def read_conf():
         raise FileNotFoundError('config.json does not exist')
 
 
+app.include_router(router, prefix="/api/v1")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=['*'],

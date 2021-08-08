@@ -2,7 +2,9 @@ version: '3.7'
 
 services:
   app:
-    image:
+    image: stanleeley/gitlab-ci-dashboard:0.1.1
+    ports:
+      - 80:80
     init: true
     expose:
       - 8080
@@ -11,4 +13,3 @@ services:
       GITLAB_GROUP:
       GITLAB_API_URL: https://gitlab.com/api/v4/
     entrypoint: /app/dockerfile/docker-entrypoint.sh
-    command: ["--port", "8080", "--host", "0.0.0.0"]
