@@ -1,2 +1,9 @@
 **/.git
 **/node_modules
+.env
+**/__pycache__
+**/logfiles
+config.json
+docker-compose.yml
+**/*.local
+**/*.DS_Store
