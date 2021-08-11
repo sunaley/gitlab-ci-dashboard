@@ -4,7 +4,7 @@
     <div
       v-for="project in state.projects"
       :key="project.id"
-      :class="[project.pipeline.status === 'success' ? 'bg-green-400' : 'bg-red-400', ' rounded']"
+      :class="[bg_color_mapping[project.pipeline.status], ' rounded']"
     >
       <div class="relative box-border h-32 p-2">
         <template
@@ -57,19 +57,42 @@ const state = reactive({
   projects: []
 })
 
-axios.get('/projects').then(rs =>  {
-  state.projects = rs.data
-  state.projects.forEach(item => {
-    let pipeline = ref({})
-    item['pipeline'] = pipeline
-    axios.get(`/projects/${item.id}/latest_pipelines`).then(rs => {
-      pipeline.value = rs.data[0]
-      axios.get(`/projects/${item.id}/pipelines/${rs.data[0].id}`).then(rs => {
-        pipeline.value = rs.data
+const bg_color_mapping = {
+  undefined: 'animate-pulse bg-gray-400',
+  created: 'bg-gray-400',
+  waiting_for_resource: 'bg-gray-400',
+  preparing: 'bg-gray-400',
+  pending: 'bg-gray-400',
+  running: 'animate-pulse bg-gray-400',
+  success: 'bg-green-400',
+  failed: 'bg-red-400',
+  canceled: 'bg-gray-400',
+  skipped: 'bg-gray-400',
+  manual: 'bg-gray-400',
+  scheduled: 'bg-gray-400'
+}
+
+const fetch_data = () => {
+  axios.get('/projects').then(rs =>  {
+    state.projects = rs.data
+    state.projects.forEach(item => {
+      let pipeline = ref({})
+      item['pipeline'] = pipeline
+      axios.get(`/projects/${item.id}/latest_pipelines`).then(rs => {
+        pipeline.value = rs.data[0]
+        axios.get(`/projects/${item.id}/pipelines/${rs.data[0].id}`).then(rs => {
+          pipeline.value = rs.data
+        })
       })
     })
   })
-})
+}
+
+fetch_data()
+
+setInterval(() => {
+  fetch_data()
+}, 60 * 5 * 1000)
 
 const format_time = (txt) => {
   return dayjs(txt).format('YYYY/MM/DD HH:mm')
